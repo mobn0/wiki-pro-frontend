@@ -2,11 +2,11 @@ import { AuthConfig } from 'angular-oauth2-oidc';
 import { environment } from '../environments/environment';
 
 export const authConfig: AuthConfig = {
-  issuer: 'http://localhost:8080/realms/ILV',
+  issuer: 'http://localhost:8080/realms/wiki-pro',
   requireHttps: false,
   redirectUri: environment.frontendBaseUrl,
   postLogoutRedirectUri: environment.frontendBaseUrl,
-  clientId: 'demoapp',
+  clientId: 'wiki-pro',
   scope: 'openid profile roles offline_access',
   responseType: 'code',
   showDebugInformation: true,
