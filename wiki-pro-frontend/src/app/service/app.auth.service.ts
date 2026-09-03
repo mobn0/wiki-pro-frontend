@@ -36,25 +36,30 @@ export class AppAuthService {
 
   async initAuth(): Promise<void> {
     this.oauthService.configure(this.authConfig);
-    this.oauthService.setupAutomaticSilentRefresh();
     this.oauthService.events.subscribe(e => this.handleEvents(e));
-    await this.oauthService.loadDiscoveryDocumentAndTryLogin().catch(() => false);
+    try {
+      await this.oauthService.loadDiscoveryDocumentAndTryLogin();
+      this.oauthService.setupAutomaticSilentRefresh();
+    } catch (e) {
+      console.error('Auth init failed', e);
+    }
   }
 
   public getRoles(): Observable<Array<string>> {
-    if (this._decodedAccessToken !== null) {
-      return new Observable<Array<string>>(observer => {
-        if (this._decodedAccessToken.resource_access.demoapp.roles) {
-          if (Array.isArray(this._decodedAccessToken.resource_access.demoapp.roles)) {
-            const resultArr = this._decodedAccessToken.resource_access.demoapp.roles.map((r: string) => r.replace('ROLE_', ''));
-            observer.next(resultArr);
-          } else {
-            observer.next([this._decodedAccessToken.resource_access.demoapp.roles.replace('ROLE_', '')]);
-          }
-        }
-      });
+    const roles = this._decodedAccessToken?.resource_access?.['wiki-pro']?.roles;
+    if (!roles) {
+      return of([]);
     }
-    return of([]);
+    const roleArr = Array.isArray(roles) ? roles : [roles];
+    return of(roleArr.map((r: string) => r.replace('ROLE_', '')));
+  }
+
+  public hasRole(role: string): boolean {
+    const roles = this._decodedAccessToken?.resource_access?.['wiki-pro']?.roles;
+    if (!Array.isArray(roles)) {
+      return false;
+    }
+    return roles.some((r: string) => r.replace('ROLE_', '') === role.replace('ROLE_', ''));
   }
 
   public getIdentityClaims(): Record<string, any> {
@@ -72,7 +77,7 @@ export class AppAuthService {
   }
 
   public login() {
-    this.oauthService.loadDiscoveryDocumentAndLogin();
+    this.oauthService.initLoginFlow();
   }
 
   private handleEvents(event: any) {

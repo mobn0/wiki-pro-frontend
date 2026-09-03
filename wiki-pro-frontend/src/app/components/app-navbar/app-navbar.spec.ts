@@ -1,22 +1,65 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AppNavbar } from './app-navbar';
+import { AppAuthService } from '../../service/app.auth.service';
 
 describe('AppNavbar', () => {
-  let component: AppNavbar;
-  let fixture: ComponentFixture<AppNavbar>;
+  const authStub = {
+    authenticated: false,
+    roles: [] as string[],
+    isAuthenticated() {
+      return this.authenticated;
+    },
+    hasRole(role: string) {
+      return this.roles.includes(role);
+    },
+    logout: () => undefined,
+  };
 
-  beforeEach(async () => {
+  async function createNavbar(): Promise<ComponentFixture<AppNavbar>> {
     await TestBed.configureTestingModule({
       imports: [AppNavbar],
+      providers: [{ provide: AppAuthService, useValue: authStub }],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(AppNavbar);
-    component = fixture.componentInstance;
+    const fixture = TestBed.createComponent(AppNavbar);
+    fixture.detectChanges();
     await fixture.whenStable();
+    return fixture;
+  }
+
+  beforeEach(() => {
+    authStub.authenticated = false;
+    authStub.roles = [];
+    TestBed.resetTestingModule();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should create', async () => {
+    const fixture = await createNavbar();
+    expect(fixture.componentInstance).toBeTruthy();
+  });
+
+  it('hides the logout button when logged out', async () => {
+    const fixture = await createNavbar();
+    expect(fixture.nativeElement.textContent).not.toContain('Logout');
+  });
+
+  it('shows the logout button when logged in', async () => {
+    authStub.authenticated = true;
+    const fixture = await createNavbar();
+    expect(fixture.nativeElement.textContent).toContain('Logout');
+  });
+
+  it('hides the Kategorien link for non-admins', async () => {
+    authStub.authenticated = true;
+    const fixture = await createNavbar();
+    expect(fixture.nativeElement.textContent).not.toContain('Kategorien');
+  });
+
+  it('shows the Kategorien link for admins', async () => {
+    authStub.authenticated = true;
+    authStub.roles = ['admin'];
+    const fixture = await createNavbar();
+    expect(fixture.nativeElement.textContent).toContain('Kategorien');
   });
 });

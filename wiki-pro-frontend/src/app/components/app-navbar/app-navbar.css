@@ -34,11 +34,3 @@
   --mat-sys-outline: color-mix(in srgb, var(--mat-sys-on-primary) 60%, transparent);
   --mat-sys-primary: var(--mat-sys-on-primary);
 }
-
-.navbar__role {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.375rem;
-  font-size: 0.875rem;
-  white-space: nowrap;
-}

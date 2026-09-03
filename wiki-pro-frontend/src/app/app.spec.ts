@@ -1,10 +1,17 @@
 import { TestBed } from '@angular/core/testing';
 import { App } from './app';
+import { AppAuthService } from './service/app.auth.service';
 
 describe('App', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [App],
+      providers: [
+        {
+          provide: AppAuthService,
+          useValue: { isAuthenticated: () => false, hasRole: () => false, logout: () => undefined },
+        },
+      ],
     }).compileComponents();
   });
 

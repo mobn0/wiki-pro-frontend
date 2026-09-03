@@ -3,6 +3,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatChip } from '@angular/material/chips';
 import { MatButton } from '@angular/material/button';
 import { AppAuthService } from '../../service/app.auth.service';
+import { AppRoles } from '../../app.roles';
 
 @Component({
     selector: 'app-login',
@@ -28,6 +29,10 @@ export class AppLogin implements OnInit {
 
   public login () {
     this.authService.login()
+    this.authService.getRoles().forEach( (str: string[]) => {
+      const str1 = str.toString()
+      localStorage.setItem(str1, str1)
+    })
   }
 
   public logout () {

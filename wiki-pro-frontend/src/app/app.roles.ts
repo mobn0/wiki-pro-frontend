@@ -1,5 +1,5 @@
 export enum AppRoles {
-  Read = 'read',
-  Update = 'update',
+  Read = 'viewer',
+  Update = 'editor',
   Admin = 'admin'
 }

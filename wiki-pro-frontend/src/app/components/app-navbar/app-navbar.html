@@ -3,7 +3,9 @@
 
   <nav class="navbar__nav">
     <button mat-button type="button">Home</button>
-    <button mat-button type="button">Kategorien</button>
+    @if (canManageCategories) {
+      <button mat-button type="button">Kategorien</button>
+    }
   </nav>
 
   <span class="navbar__spacer"></span>
@@ -14,8 +16,10 @@
     <input matInput type="search" placeholder="Suchen…" />
   </mat-form-field>
 
-  <span class="navbar__role">
-    <mat-icon>person</mat-icon>
-    Viewer
-  </span>
+  @if (isLoggedIn) {
+    <button mat-button type="button" (click)="logout()">
+      <mat-icon>logout</mat-icon>
+      Logout
+    </button>
+  }
 </mat-toolbar>
