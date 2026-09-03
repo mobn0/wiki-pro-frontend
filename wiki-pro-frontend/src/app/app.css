@@ -1,0 +1,8 @@
+:host {
+  display: block;
+  min-height: 100dvh;
+}
+
+.app-content {
+  padding: 1.5rem;
+}
