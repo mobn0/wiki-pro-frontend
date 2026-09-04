@@ -6,3 +6,5 @@ export interface Article {
   content: string;
   topic: Topic;
 }
+
+export type ArticleDraft = Omit<Article, 'id'>;

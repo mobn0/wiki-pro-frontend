@@ -69,9 +69,9 @@ describe('Categories', () => {
 
   it('lists categories with their topic counts', async () => {
     const fixture = await createComponent();
-    const row = fixture.nativeElement.querySelector('tr[mat-row]');
+    const row = fixture.nativeElement.querySelector('mat-list-item');
     expect(row.textContent).toContain('Technik');
-    expect(row.textContent).toContain('2');
+    expect(row.textContent).toContain('2 Themen');
   });
 
   it('creates a category through the service', async () => {

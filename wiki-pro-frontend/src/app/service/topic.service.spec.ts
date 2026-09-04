@@ -31,6 +31,16 @@ describe('TopicService', () => {
     expect(result).toEqual(topics);
   });
 
+  it('loads one topic by id', () => {
+    let result: unknown;
+    service.get(3).subscribe((r) => (result = r));
+
+    const req = http.expectOne(`${base}/3`);
+    expect(req.request.method).toBe('GET');
+    req.flush({ id: 3, name: 'Frontend', category });
+    expect(result).toEqual({ id: 3, name: 'Frontend', category });
+  });
+
   it('creates a topic with a name and category payload', () => {
     service.create('Frontend', category).subscribe();
 

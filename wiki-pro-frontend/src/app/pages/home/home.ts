@@ -1,8 +1,10 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { MatCardModule } from '@angular/material/card';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
 import { forkJoin } from 'rxjs';
+import { PageHeader } from '../../components/page-header/page-header';
+import { Status } from '../../components/status/status';
 import { CategoryService } from '../../service/category.service';
 import { TopicService } from '../../service/topic.service';
 
@@ -14,9 +16,8 @@ interface CategoryCard {
 
 @Component({
   selector: 'app-home',
-  imports: [RouterLink, MatCardModule, MatProgressBarModule],
+  imports: [RouterLink, MatIconModule, MatListModule, PageHeader, Status],
   templateUrl: './home.html',
-  styleUrl: './home.css',
 })
 export class Home implements OnInit {
   private categoryService = inject(CategoryService);

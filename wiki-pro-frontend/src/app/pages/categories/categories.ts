@@ -1,13 +1,15 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatTableModule } from '@angular/material/table';
+import { MatListModule } from '@angular/material/list';
+import { MatButtonModule } from '@angular/material/button';
 import { forkJoin } from 'rxjs';
+import { InlineAdd } from '../../components/inline-add/inline-add';
+import { PageHeader } from '../../components/page-header/page-header';
+import { Status } from '../../components/status/status';
 import { Category } from '../../model/category.model';
 import { CategoryService } from '../../service/category.service';
 import { TopicService } from '../../service/topic.service';
@@ -21,15 +23,16 @@ interface CategoryRow extends Category {
   imports: [
     ReactiveFormsModule,
     RouterLink,
-    MatTableModule,
+    MatListModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule,
     MatIconModule,
-    MatProgressBarModule,
+    MatButtonModule,
+    PageHeader,
+    Status,
+    InlineAdd,
   ],
   templateUrl: './categories.html',
-  styleUrl: './categories.css',
 })
 export class Categories implements OnInit {
   private service = inject(CategoryService);
@@ -39,7 +42,6 @@ export class Categories implements OnInit {
   protected readonly loading = signal(false);
   protected readonly error = signal<string | null>(null);
   protected readonly editingId = signal<number | null>(null);
-  protected readonly displayedColumns = ['name', 'topics', 'actions'];
 
   protected readonly newName = new FormControl('', {
     nonNullable: true,

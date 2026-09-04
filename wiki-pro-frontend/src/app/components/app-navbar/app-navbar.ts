@@ -1,5 +1,6 @@
 import { Component, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -11,6 +12,7 @@ import { AppRoles } from '../../app.roles';
 @Component({
   selector: 'app-navbar',
   imports: [
+    ReactiveFormsModule,
     RouterLink,
     MatToolbarModule,
     MatButtonModule,
@@ -23,6 +25,9 @@ import { AppRoles } from '../../app.roles';
 })
 export class AppNavbar {
   private authService = inject(AppAuthService);
+  private router = inject(Router);
+
+  protected readonly search = new FormControl('', { nonNullable: true });
 
   protected get isLoggedIn(): boolean {
     return this.authService.isAuthenticated();
@@ -30,6 +35,15 @@ export class AppNavbar {
 
   protected get canManageCategories(): boolean {
     return this.authService.hasRole(AppRoles.Admin);
+  }
+
+  protected submitSearch(): void {
+    const query = this.search.value.trim();
+    if (!query) {
+      return;
+    }
+    this.router.navigate(['/search', query]);
+    this.search.reset('');
   }
 
   protected logout(): void {

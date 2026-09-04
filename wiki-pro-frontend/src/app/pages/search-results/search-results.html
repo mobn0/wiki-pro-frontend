@@ -1,0 +1,46 @@
+<app-page-header [title]="heading" />
+
+<app-status [loading]="loading()" [error]="error()" />
+
+@if (result(); as result) {
+  @if (total === 0 && !loading()) {
+    <p class="muted">Keine Ergebnisse gefunden.</p>
+  }
+
+  @if (result.categories.length > 0) {
+    <mat-nav-list>
+      <div matSubheader>Kategorien ({{ result.categories.length }})</div>
+      @for (category of result.categories; track category.id) {
+        <a mat-list-item [routerLink]="['/categories', category.id]">{{ category.name }}</a>
+      }
+    </mat-nav-list>
+  }
+
+  @if (result.topics.length > 0) {
+    <mat-nav-list>
+      <div matSubheader>Themen ({{ result.topics.length }})</div>
+      @for (topic of result.topics; track topic.id) {
+        <a mat-list-item [routerLink]="['/topics', topic.id]">
+          <span matListItemTitle>{{ topic.name }}</span>
+          @if (topic.category) {
+            <span matListItemLine>{{ topic.category.name }}</span>
+          }
+        </a>
+      }
+    </mat-nav-list>
+  }
+
+  @if (result.articles.length > 0) {
+    <mat-nav-list>
+      <div matSubheader>Artikel ({{ result.articles.length }})</div>
+      @for (article of result.articles; track article.id) {
+        <a mat-list-item [routerLink]="['/articles', article.id]">
+          <span matListItemTitle>{{ article.title }}</span>
+          @if (article.topic) {
+            <span matListItemLine>{{ article.topic.name }}</span>
+          }
+        </a>
+      }
+    </mat-nav-list>
+  }
+}

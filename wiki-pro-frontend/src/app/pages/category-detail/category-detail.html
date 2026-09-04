@@ -1,56 +1,25 @@
-<section class="detail">
-  <nav class="detail__breadcrumb" aria-label="Breadcrumb">
-    <a routerLink="/">Home</a>
-    @if (canManage) {
-      <span aria-hidden="true">›</span>
-      <a routerLink="/categories">Kategorien</a>
-    }
-    @if (category(); as category) {
-      <span aria-hidden="true">›</span>
-      <span>{{ category.name }}</span>
-    }
-  </nav>
+<app-breadcrumb [crumbs]="crumbs()" />
 
-  <header class="detail__header">
-    <h1>
-      @if (category(); as category) {
-        {{ category.name }} – Themen
-      } @else {
-        Themen
-      }
-    </h1>
-  </header>
+<app-page-header [title]="heading()" />
 
-  @if (loading()) {
-    <mat-progress-bar mode="indeterminate" />
-  }
+<app-status [loading]="loading()" [error]="error()" />
 
-  @if (error(); as message) {
-    <p class="detail__error" role="alert">{{ message }}</p>
-  }
+@if (canManage) {
+  <app-inline-add
+    label="Neues Thema"
+    placeholder="Name des Themas"
+    [control]="newName"
+    [disabled]="loading() || !category()"
+    (submitted)="add()"
+  />
+}
 
-  @if (canManage) {
-    <form class="detail__new" (submit)="$event.preventDefault(); add()">
-      <mat-form-field appearance="outline" subscriptSizing="dynamic">
-        <mat-label>Neues Thema</mat-label>
-        <input matInput [formControl]="newName" maxlength="255" placeholder="Name des Themas" />
-        @if (newName.hasError('required') && newName.touched) {
-          <mat-error>Name ist erforderlich.</mat-error>
-        }
-      </mat-form-field>
-      <button mat-flat-button type="submit" [disabled]="loading() || !category()">
-        <mat-icon>add</mat-icon>
-        Hinzufügen
-      </button>
-    </form>
-  }
-
-  <table mat-table [dataSource]="topics()" class="detail__table">
-    <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef>Name</th>
-      <td mat-cell *matCellDef="let topic">
+@if (topics().length > 0) {
+  <mat-list>
+    @for (topic of topics(); track topic.id) {
+      <mat-list-item>
         @if (editingId() === topic.id) {
-          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-form-field matListItemTitle appearance="outline" subscriptSizing="dynamic">
             <input
               matInput
               [formControl]="editName"
@@ -59,28 +28,25 @@
             />
           </mat-form-field>
         } @else {
-          {{ topic.name }}
+          <a matListItemTitle [routerLink]="['/topics', topic.id]">{{ topic.name }}</a>
         }
-      </td>
-    </ng-container>
 
-    <ng-container matColumnDef="articles">
-      <th mat-header-cell *matHeaderCellDef class="detail__count-col"># Artikel</th>
-      <td mat-cell *matCellDef="let topic" class="detail__count">{{ topic.articleCount }}</td>
-    </ng-container>
+        @if (editingId() !== topic.id) {
+          <span matListItemLine>{{ topic.articleCount }} Artikel</span>
+        }
 
-    @if (canManage) {
-      <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef class="detail__actions-col">Aktionen</th>
-        <td mat-cell *matCellDef="let topic" class="detail__actions">
-          @if (editingId() === topic.id) {
+        @if (canManage && editingId() === topic.id) {
+          <span matListItemMeta>
             <button mat-icon-button type="button" (click)="saveEdit(topic)" aria-label="Speichern">
               <mat-icon>check</mat-icon>
             </button>
             <button mat-icon-button type="button" (click)="cancelEdit()" aria-label="Abbrechen">
               <mat-icon>close</mat-icon>
             </button>
-          } @else {
+          </span>
+        }
+        @if (canManage && editingId() !== topic.id) {
+          <span matListItemMeta>
             <button
               mat-icon-button
               type="button"
@@ -92,16 +58,11 @@
             <button mat-icon-button type="button" (click)="remove(topic)" aria-label="Löschen">
               <mat-icon>delete</mat-icon>
             </button>
-          }
-        </td>
-      </ng-container>
+          </span>
+        }
+      </mat-list-item>
     }
-
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-  </table>
-
-  @if (!loading() && topics().length === 0) {
-    <p class="detail__empty">Noch keine Themen in dieser Kategorie.</p>
-  }
-</section>
+  </mat-list>
+} @else if (!loading()) {
+  <p class="muted">Noch keine Themen in dieser Kategorie.</p>
+}

@@ -1,33 +1,19 @@
-<section class="home">
-  @if (loading()) {
-    <mat-progress-bar mode="indeterminate" />
-  }
+<app-page-header title="Kategorien" />
 
-  @if (error(); as message) {
-    <p class="home__error" role="alert">{{ message }}</p>
-  }
+<app-status [loading]="loading()" [error]="error()" />
 
-  <section class="home__section">
-    <h1>Kategorien</h1>
-
-    @if (categories().length > 0) {
-      <div class="home__cards">
-        @for (category of categories(); track category.id) {
-          <a class="home__card-link" [routerLink]="['/categories', category.id]">
-            <mat-card class="home__card" appearance="outlined">
-              <mat-card-content>
-                <span class="home__card-name">{{ category.name }}</span>
-                <span class="home__card-meta">
-                  {{ category.topicCount }}
-                  {{ category.topicCount === 1 ? 'Thema' : 'Themen' }}
-                </span>
-              </mat-card-content>
-            </mat-card>
-          </a>
-        }
-      </div>
-    } @else if (!loading()) {
-      <p class="home__empty">Noch keine Kategorien vorhanden.</p>
+@if (categories().length > 0) {
+  <mat-nav-list>
+    @for (category of categories(); track category.id) {
+      <a mat-list-item [routerLink]="['/categories', category.id]">
+        <span matListItemTitle>{{ category.name }}</span>
+        <span matListItemLine>
+          {{ category.topicCount }} {{ category.topicCount === 1 ? 'Thema' : 'Themen' }}
+        </span>
+        <mat-icon matListItemMeta>chevron_right</mat-icon>
+      </a>
     }
-  </section>
-</section>
+  </mat-nav-list>
+} @else if (!loading()) {
+  <p class="muted">Noch keine Kategorien vorhanden.</p>
+}

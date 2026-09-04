@@ -1,1 +1,34 @@
-/* You can add global styles to this file, and also import other style files */
+/* Layout primitives shared across routed pages. UI chrome lives in components. */
+
+.app-content > * {
+  display: block;
+  max-width: 720px;
+}
+
+.form-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.button-row {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.prose {
+  white-space: pre-wrap;
+  line-height: 1.6;
+}
+
+.center-page {
+  display: flex;
+  justify-content: center;
+  padding-top: 2.5rem;
+}
+
+.muted {
+  color: var(--mat-sys-on-surface-variant);
+  margin: 1rem 0;
+}

@@ -1,0 +1,28 @@
+<app-breadcrumb [crumbs]="crumbs()" />
+
+<app-page-header [title]="heading()">
+  @if (canEdit && topic(); as topicValue) {
+    <a mat-flat-button [routerLink]="['/articles/new']" [queryParams]="{ topic: topicValue.id }">
+      <mat-icon>add</mat-icon>
+      Neuer Artikel
+    </a>
+  }
+</app-page-header>
+
+<app-status [loading]="loading()" [error]="error()" />
+
+@if (articles().length > 0) {
+  <mat-nav-list>
+    @for (article of articles(); track article.id) {
+      <a mat-list-item [routerLink]="['/articles', article.id]">
+        <span matListItemTitle>{{ article.title }}</span>
+        @if (article.snippet) {
+          <span matListItemLine>{{ article.snippet }}</span>
+        }
+        <mat-icon matListItemMeta>chevron_right</mat-icon>
+      </a>
+    }
+  </mat-nav-list>
+} @else if (!loading()) {
+  <p class="muted">Noch keine Artikel in diesem Thema.</p>
+}

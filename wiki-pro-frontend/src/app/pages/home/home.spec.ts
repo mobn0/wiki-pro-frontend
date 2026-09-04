@@ -59,7 +59,7 @@ describe('Home', () => {
 
   it('links each category card to its detail page', async () => {
     const fixture = await createComponent();
-    const links = fixture.nativeElement.querySelectorAll('a.home__card-link');
+    const links = fixture.nativeElement.querySelectorAll('a[mat-list-item]');
 
     expect(links.length).toBe(2);
     expect(links[0].getAttribute('href')).toBe('/categories/2');

@@ -1,14 +1,17 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatTableModule } from '@angular/material/table';
+import { MatListModule } from '@angular/material/list';
 import { forkJoin } from 'rxjs';
 import { AppRoles } from '../../app.roles';
+import { Breadcrumb, Crumb } from '../../components/breadcrumb/breadcrumb';
+import { InlineAdd } from '../../components/inline-add/inline-add';
+import { PageHeader } from '../../components/page-header/page-header';
+import { Status } from '../../components/status/status';
 import { Category } from '../../model/category.model';
 import { AppAuthService } from '../../service/app.auth.service';
 import { ArticleService } from '../../service/article.service';
@@ -26,15 +29,17 @@ interface TopicRow {
   imports: [
     ReactiveFormsModule,
     RouterLink,
-    MatTableModule,
+    MatListModule,
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
     MatIconModule,
-    MatProgressBarModule,
+    Breadcrumb,
+    PageHeader,
+    Status,
+    InlineAdd,
   ],
   templateUrl: './category-detail.html',
-  styleUrl: './category-detail.css',
 })
 export class CategoryDetail implements OnInit {
   private route = inject(ActivatedRoute);
@@ -52,9 +57,23 @@ export class CategoryDetail implements OnInit {
   protected readonly loading = signal(false);
   protected readonly error = signal<string | null>(null);
   protected readonly editingId = signal<number | null>(null);
-  protected readonly displayedColumns = this.canManage
-    ? ['name', 'articles', 'actions']
-    : ['name', 'articles'];
+
+  protected readonly heading = computed(() => {
+    const category = this.category();
+    return category ? `${category.name} – Themen` : 'Themen';
+  });
+
+  protected readonly crumbs = computed<Crumb[]>(() => {
+    const trail: Crumb[] = [{ label: 'Home', link: '/' }];
+    if (this.canManage) {
+      trail.push({ label: 'Kategorien', link: '/categories' });
+    }
+    const category = this.category();
+    if (category) {
+      trail.push({ label: category.name });
+    }
+    return trail;
+  });
 
   protected readonly newName = new FormControl('', {
     nonNullable: true,

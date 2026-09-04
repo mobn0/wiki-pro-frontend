@@ -1,0 +1,22 @@
+<app-status [loading]="loading()" [error]="error()" />
+
+@if (article(); as article) {
+  <app-breadcrumb [crumbs]="crumbs()" />
+
+  <app-page-header [title]="article.title">
+    @if (canEdit) {
+      <div class="button-row">
+        <a mat-stroked-button [routerLink]="['/articles', article.id, 'edit']">
+          <mat-icon>edit</mat-icon>
+          Bearbeiten
+        </a>
+        <button mat-stroked-button type="button" (click)="remove()">
+          <mat-icon>delete</mat-icon>
+          Löschen
+        </button>
+      </div>
+    }
+  </app-page-header>
+
+  <p class="prose">{{ article.content }}</p>
+}

@@ -1,0 +1,43 @@
+<app-page-header [title]="isEdit ? 'Artikel bearbeiten' : 'Neuer Artikel'" />
+
+<app-status [loading]="loading()" [error]="error()" />
+
+<form class="form-stack" [formGroup]="form" (ngSubmit)="save()">
+  <mat-form-field appearance="outline">
+    <mat-label>Titel</mat-label>
+    <input matInput formControlName="title" maxlength="255" placeholder="Artikeltitel eingeben…" />
+    @if (form.controls.title.hasError('required') && form.controls.title.touched) {
+      <mat-error>Titel ist erforderlich.</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Thema</mat-label>
+    <mat-select formControlName="topicId">
+      @for (topic of topics(); track topic.id) {
+        <mat-option [value]="topic.id">{{ topic.name }} ({{ topic.category.name }})</mat-option>
+      }
+    </mat-select>
+    @if (form.controls.topicId.hasError('required') && form.controls.topicId.touched) {
+      <mat-error>Thema ist erforderlich.</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Inhalt</mat-label>
+    <textarea matInput formControlName="content" rows="12"></textarea>
+    @if (form.controls.content.hasError('required') && form.controls.content.touched) {
+      <mat-error>Inhalt ist erforderlich.</mat-error>
+    }
+  </mat-form-field>
+
+  <div class="button-row">
+    <button mat-flat-button type="submit" [disabled]="saving()">
+      <mat-icon>save</mat-icon>
+      Speichern
+    </button>
+    <button mat-stroked-button type="button" (click)="cancel()" [disabled]="saving()">
+      Abbrechen
+    </button>
+  </div>
+</form>

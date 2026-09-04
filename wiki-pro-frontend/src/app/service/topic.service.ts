@@ -14,6 +14,10 @@ export class TopicService {
     return this.http.get<Topic[]>(this.baseUrl);
   }
 
+  get(id: number): Observable<Topic> {
+    return this.http.get<Topic>(`${this.baseUrl}/${id}`);
+  }
+
   create(name: string, category: Category): Observable<Topic> {
     return this.http.post<Topic>(this.baseUrl, { name, category });
   }
