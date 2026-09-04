@@ -19,6 +19,28 @@
   gap: 1rem;
 }
 
+.home__card-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  border-radius: 12px;
+}
+
+.home__card-link:focus-visible {
+  outline: 2px solid var(--mat-sys-primary);
+  outline-offset: 2px;
+}
+
+.home__card {
+  height: 100%;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+
+.home__card-link:hover .home__card {
+  border-color: var(--mat-sys-primary);
+}
+
 .home__card mat-card-content {
   display: flex;
   flex-direction: column;

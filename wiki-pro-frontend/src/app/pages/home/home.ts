@@ -1,4 +1,5 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { forkJoin } from 'rxjs';
@@ -13,7 +14,7 @@ interface CategoryCard {
 
 @Component({
   selector: 'app-home',
-  imports: [MatCardModule, MatProgressBarModule],
+  imports: [RouterLink, MatCardModule, MatProgressBarModule],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })

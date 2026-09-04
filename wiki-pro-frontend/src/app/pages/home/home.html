@@ -13,15 +13,17 @@
     @if (categories().length > 0) {
       <div class="home__cards">
         @for (category of categories(); track category.id) {
-          <mat-card class="home__card" appearance="outlined">
-            <mat-card-content>
-              <span class="home__card-name">{{ category.name }}</span>
-              <span class="home__card-meta">
-                {{ category.topicCount }}
-                {{ category.topicCount === 1 ? 'Thema' : 'Themen' }}
-              </span>
-            </mat-card-content>
-          </mat-card>
+          <a class="home__card-link" [routerLink]="['/categories', category.id]">
+            <mat-card class="home__card" appearance="outlined">
+              <mat-card-content>
+                <span class="home__card-name">{{ category.name }}</span>
+                <span class="home__card-meta">
+                  {{ category.topicCount }}
+                  {{ category.topicCount === 1 ? 'Thema' : 'Themen' }}
+                </span>
+              </mat-card-content>
+            </mat-card>
+          </a>
         }
       </div>
     } @else if (!loading()) {

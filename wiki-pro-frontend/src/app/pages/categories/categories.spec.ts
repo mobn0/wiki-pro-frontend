@@ -1,8 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { Categories } from './categories';
 import { Category } from '../../model/category.model';
+import { Topic } from '../../model/topic.model';
 import { CategoryService } from '../../service/category.service';
+import { TopicService } from '../../service/topic.service';
 
 describe('Categories', () => {
   let store: Category[];
@@ -28,10 +31,23 @@ describe('Categories', () => {
     },
   };
 
+  const topicStub = {
+    getAll(): Observable<Topic[]> {
+      return of([
+        { id: 1, name: 'Prozesse', category: { id: 1, name: 'Technik' } },
+        { id: 2, name: 'Frontend', category: { id: 1, name: 'Technik' } },
+      ]);
+    },
+  };
+
   async function createComponent(): Promise<ComponentFixture<Categories>> {
     await TestBed.configureTestingModule({
       imports: [Categories],
-      providers: [{ provide: CategoryService, useValue: serviceStub }],
+      providers: [
+        provideRouter([]),
+        { provide: CategoryService, useValue: serviceStub },
+        { provide: TopicService, useValue: topicStub },
+      ],
     }).compileComponents();
 
     const fixture = TestBed.createComponent(Categories);
@@ -51,9 +67,11 @@ describe('Categories', () => {
     expect(fixture.componentInstance).toBeTruthy();
   });
 
-  it('lists categories returned by the service', async () => {
+  it('lists categories with their topic counts', async () => {
     const fixture = await createComponent();
-    expect(fixture.nativeElement.textContent).toContain('Technik');
+    const row = fixture.nativeElement.querySelector('tr[mat-row]');
+    expect(row.textContent).toContain('Technik');
+    expect(row.textContent).toContain('2');
   });
 
   it('creates a category through the service', async () => {

@@ -1,18 +1,26 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTableModule } from '@angular/material/table';
+import { forkJoin } from 'rxjs';
 import { Category } from '../../model/category.model';
 import { CategoryService } from '../../service/category.service';
+import { TopicService } from '../../service/topic.service';
+
+interface CategoryRow extends Category {
+  topicCount: number;
+}
 
 @Component({
   selector: 'app-categories',
   imports: [
     ReactiveFormsModule,
+    RouterLink,
     MatTableModule,
     MatFormFieldModule,
     MatInputModule,
@@ -25,12 +33,13 @@ import { CategoryService } from '../../service/category.service';
 })
 export class Categories implements OnInit {
   private service = inject(CategoryService);
+  private topicService = inject(TopicService);
 
-  protected readonly categories = signal<Category[]>([]);
+  protected readonly categories = signal<CategoryRow[]>([]);
   protected readonly loading = signal(false);
   protected readonly error = signal<string | null>(null);
   protected readonly editingId = signal<number | null>(null);
-  protected readonly displayedColumns = ['name', 'actions'];
+  protected readonly displayedColumns = ['name', 'topics', 'actions'];
 
   protected readonly newName = new FormControl('', {
     nonNullable: true,
@@ -48,10 +57,25 @@ export class Categories implements OnInit {
   protected load(): void {
     this.loading.set(true);
     this.error.set(null);
-    this.service.getAll().subscribe({
-      next: (categories) => {
+    forkJoin({
+      categories: this.service.getAll(),
+      topics: this.topicService.getAll(),
+    }).subscribe({
+      next: ({ categories, topics }) => {
+        const topicsByCategory = new Map<number, number>();
+        for (const topic of topics) {
+          const categoryId = topic.category?.id;
+          if (categoryId != null) {
+            topicsByCategory.set(categoryId, (topicsByCategory.get(categoryId) ?? 0) + 1);
+          }
+        }
         this.categories.set(
-          [...categories].sort((a, b) => a.name.localeCompare(b.name)),
+          [...categories]
+            .sort((a, b) => a.name.localeCompare(b.name))
+            .map((category) => ({
+              ...category,
+              topicCount: topicsByCategory.get(category.id) ?? 0,
+            })),
         );
         this.loading.set(false);
       },
@@ -106,7 +130,7 @@ export class Categories implements OnInit {
     }
     this.loading.set(true);
     this.error.set(null);
-    this.service.update({ ...category, name }).subscribe({
+    this.service.update({ id: category.id, name }).subscribe({
       next: () => {
         this.editingId.set(null);
         this.load();

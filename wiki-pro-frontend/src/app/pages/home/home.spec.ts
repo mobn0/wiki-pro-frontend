@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 
 import { Home } from './home';
@@ -25,6 +26,7 @@ describe('Home', () => {
     await TestBed.configureTestingModule({
       imports: [Home],
       providers: [
+        provideRouter([]),
         { provide: CategoryService, useValue: categoryStub },
         { provide: TopicService, useValue: topicStub },
       ],
@@ -53,5 +55,14 @@ describe('Home', () => {
     expect(text).toContain('2 Themen');
     expect(text).toContain('Prozesse');
     expect(text).toContain('0 Themen');
+  });
+
+  it('links each category card to its detail page', async () => {
+    const fixture = await createComponent();
+    const links = fixture.nativeElement.querySelectorAll('a.home__card-link');
+
+    expect(links.length).toBe(2);
+    expect(links[0].getAttribute('href')).toBe('/categories/2');
+    expect(links[1].getAttribute('href')).toBe('/categories/1');
   });
 });
