@@ -11,7 +11,7 @@
     <p class="categories__error" role="alert">{{ message }}</p>
   }
 
-  <form class="categories__new" (ngSubmit)="add()">
+  <form class="categories__new" (submit)="$event.preventDefault(); add()">
     <mat-form-field appearance="outline" subscriptSizing="dynamic">
       <mat-label>Neue Kategorie</mat-label>
       <input matInput [formControl]="newName" maxlength="255" placeholder="Name der Kategorie" />
@@ -21,7 +21,7 @@
     </mat-form-field>
     <button mat-flat-button type="submit" [disabled]="loading()">
       <mat-icon>add</mat-icon>
-      Hinzufuegen
+      Hinzufügen
     </button>
   </form>
 
@@ -53,7 +53,7 @@
           <button mat-icon-button type="button" (click)="startEdit(category)" aria-label="Bearbeiten">
             <mat-icon>edit</mat-icon>
           </button>
-          <button mat-icon-button type="button" (click)="remove(category)" aria-label="Loeschen">
+          <button mat-icon-button type="button" (click)="remove(category)" aria-label="Löschen">
             <mat-icon>delete</mat-icon>
           </button>
         }

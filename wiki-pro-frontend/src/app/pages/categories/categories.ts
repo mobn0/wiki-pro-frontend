@@ -120,7 +120,7 @@ export class Categories implements OnInit {
 
   protected remove(category: Category): void {
     const confirmed = confirm(
-      `Kategorie "${category.name}" wirklich loeschen? Zugehoerige Themen werden mitentfernt.`,
+      `Kategorie "${category.name}" wirklich löschen? Zugehörige Themen werden mitentfernt.`,
     );
     if (!confirmed) {
       return;
@@ -130,7 +130,7 @@ export class Categories implements OnInit {
     this.service.delete(category.id).subscribe({
       next: () => this.load(),
       error: () => {
-        this.error.set('Kategorie konnte nicht geloescht werden.');
+        this.error.set('Kategorie konnte nicht gelöscht werden.');
         this.loading.set(false);
       },
     });
