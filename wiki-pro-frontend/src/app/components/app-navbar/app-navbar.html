@@ -2,9 +2,9 @@
   <span class="navbar__brand">WikiPro</span>
 
   <nav class="navbar__nav">
-    <button mat-button type="button">Home</button>
+    <button mat-button type="button" routerLink="/">Home</button>
     @if (canManageCategories) {
-      <button mat-button type="button">Kategorien</button>
+      <button mat-button type="button" routerLink="/categories">Kategorien</button>
     }
   </nav>
 

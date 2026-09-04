@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 
 import { AppNavbar } from './app-navbar';
 import { AppAuthService } from '../../service/app.auth.service';
@@ -19,7 +20,10 @@ describe('AppNavbar', () => {
   async function createNavbar(): Promise<ComponentFixture<AppNavbar>> {
     await TestBed.configureTestingModule({
       imports: [AppNavbar],
-      providers: [{ provide: AppAuthService, useValue: authStub }],
+      providers: [
+        provideRouter([]),
+        { provide: AppAuthService, useValue: authStub },
+      ],
     }).compileComponents();
 
     const fixture = TestBed.createComponent(AppNavbar);

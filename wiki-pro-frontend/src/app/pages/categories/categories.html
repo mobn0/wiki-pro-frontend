@@ -1,0 +1,70 @@
+<section class="categories">
+  <header class="categories__header">
+    <h1>Kategorien verwalten</h1>
+  </header>
+
+  @if (loading()) {
+    <mat-progress-bar mode="indeterminate" />
+  }
+
+  @if (error(); as message) {
+    <p class="categories__error" role="alert">{{ message }}</p>
+  }
+
+  <form class="categories__new" (ngSubmit)="add()">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Neue Kategorie</mat-label>
+      <input matInput [formControl]="newName" maxlength="255" placeholder="Name der Kategorie" />
+      @if (newName.hasError('required') && newName.touched) {
+        <mat-error>Name ist erforderlich.</mat-error>
+      }
+    </mat-form-field>
+    <button mat-flat-button type="submit" [disabled]="loading()">
+      <mat-icon>add</mat-icon>
+      Hinzufuegen
+    </button>
+  </form>
+
+  <table mat-table [dataSource]="categories()" class="categories__table">
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>Name</th>
+      <td mat-cell *matCellDef="let category">
+        @if (editingId() === category.id) {
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <input matInput [formControl]="editName" maxlength="255" (keyup.enter)="saveEdit(category)" />
+          </mat-form-field>
+        } @else {
+          {{ category.name }}
+        }
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef class="categories__actions-col">Aktionen</th>
+      <td mat-cell *matCellDef="let category" class="categories__actions">
+        @if (editingId() === category.id) {
+          <button mat-icon-button type="button" (click)="saveEdit(category)" aria-label="Speichern">
+            <mat-icon>check</mat-icon>
+          </button>
+          <button mat-icon-button type="button" (click)="cancelEdit()" aria-label="Abbrechen">
+            <mat-icon>close</mat-icon>
+          </button>
+        } @else {
+          <button mat-icon-button type="button" (click)="startEdit(category)" aria-label="Bearbeiten">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button type="button" (click)="remove(category)" aria-label="Loeschen">
+            <mat-icon>delete</mat-icon>
+          </button>
+        }
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+
+  @if (!loading() && categories().length === 0) {
+    <p class="categories__empty">Noch keine Kategorien vorhanden.</p>
+  }
+</section>

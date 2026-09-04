@@ -1,0 +1,41 @@
+:host {
+  display: block;
+  max-width: 720px;
+}
+
+.categories__header h1 {
+  margin: 0 0 0.5rem;
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.categories__new {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+
+.categories__new mat-form-field {
+  flex: 1 1 auto;
+}
+
+.categories__table {
+  width: 100%;
+}
+
+.categories__actions-col,
+.categories__actions {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.categories__error {
+  color: var(--mat-sys-error);
+  margin: 0.5rem 0;
+}
+
+.categories__empty {
+  color: var(--mat-sys-on-surface-variant);
+  margin: 1rem 0;
+}
